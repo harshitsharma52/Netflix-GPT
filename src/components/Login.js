@@ -1,6 +1,9 @@
 import React, { useRef, useState } from 'react'
 import Header from './Header'
 import { checkValidData } from '../utils/validate';
+import { auth } from '../utils/firebase';
+
+import {createUserWithEmailAndPassword,signInWithEmailAndPassword} from "firebase/auth";
 
 const Login = () => {
  
@@ -24,6 +27,47 @@ const Login = () => {
     setErrorMessage(message);
 
     //sign in/up
+    if(message!=null) return; //if we get error then no need to create a new user or sign in/up
+
+    //sign in/up logic
+
+    if(!isSignInForm)  //sign up logic
+    {
+     createUserWithEmailAndPassword(auth,email.current.value,password.current.value)
+     .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+      // ...
+     })
+     .catch((error) => {
+     const errorCode = error.code;
+     const errorMessage = error.message;
+     setErrorMessage(errorCode + "-" + errorMessage);
+
+
+     // ..
+     });
+
+    }
+    else{
+
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+       })
+       .catch((error) => {
+       const errorCode = error.code;
+       const errorMessage = error.message;
+       setErrorMessage(errorCode + "-" + errorMessage); 
+
+       });
+
+    }
+
 
  }
     
